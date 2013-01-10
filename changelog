@@ -2,6 +2,7 @@
 
 require 'net/http'
 require 'json'
+require 'cgi'
 
 
 class Commit
@@ -45,7 +46,7 @@ private
 	end
 
 	def get_commit_message(commit)
-		commit.gsub(/\*\s*(.*)\(.*/, '\1')
+		CGI::escapeHTML(commit.gsub(/\*\s*(.*)\(.*/, '\1'))
 	end
 
 	def get_issue_number(commit)

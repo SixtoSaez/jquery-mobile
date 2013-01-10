@@ -60,8 +60,7 @@ if !branch1
 	exit
 end
 
-branch1 = "remotes/origin/#{branch1}"
-branches = "#{branch1}..."
+branches = "remotes/origin/#{branch1}..."
 if branch2
 	branches << branch2
 end
@@ -72,7 +71,14 @@ formatted_commits = `git whatchanged #{branches} --pretty=format:"* %s (#{format
 formatted_commits = formatted_commits.gsub(/^:.*$/, '').gsub(/^\s+$/,'').split(/(\n|\r)/).reject { |x| x =~ /\A\s*\z/ }
 
 #<p><a href="COMMIT_LINK">ISSUE_TITLE</a> (<a href="https://github.com/jquery/jquery-mobile/issues/ISSUE_NUMBER">Issue #ISSUE_NUMBER</a>) - COMMIT_COMMENT
+commits = []
 formatted_commits.each do |fc|
-	commit = Commit.new(fc)
-	puts commit.to_s
+	commits << Commit.new(fc)
+end
+commits.sort!{ |a,b| a.commit_message <=> b.commit_message }
+
+File.open("#{branch1}.html", 'w') do |f|
+	commits.each do |commit|
+		f.write(commit)
+	end
 end

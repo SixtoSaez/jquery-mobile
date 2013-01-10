@@ -5,7 +5,7 @@ require 'json'
 
 
 class Commit
-	attr_accessor :issue_title, :commit_link, :commit_message, :issue_number
+	attr_accessor :issue_title, :commit_link, :commit_message, :issue_number, :associated_with
 
 	def initialize(commit)
 		number = get_issue_number(commit)
@@ -13,14 +13,19 @@ class Commit
 		@issue_title = get_issue_title if @issue_number
 		@commit_link = get_commit_link(commit)
 		@commit_message = get_commit_message(commit)
+		@associated_with = @commit_message.split(' ').first.capitalize.gsub(/:$/i, '').gsub(/(s)es$/i,'\1').gsub(/s$/i, '')
+	end
+
+	def ==(another_commit)
+		@commit_message == another_commit.commit_message
 	end
 
 	def to_s
 		str = ""
-		str << "<p><a href=\"#{@commit_link}\">#{@issue_title||@commit_message}</a>"
-		str << "(<a href=\"https://github.com/jquery/jquery-mobile/issues/#{@issue_number}\">Issue ##{@issue_number}</a>)" if @issue_number
-		str << " - #{@commit_message}" if @commit_message && @issue_number
-		str << "</p>"
+		str << "<p><a href=\"#{@commit_link}\">#{@issue_title||@commit_message}</a>\n"
+		str << "<span class='issue'>(<a href=\"https://github.com/jquery/jquery-mobile/issues/#{@issue_number}\">Issue ##{@issue_number}</a>)</span>\n"if @issue_number
+		str << " - #{@commit_message}\n" if @commit_message && @issue_number
+		str << "</p>\n"
 		str
 	end
 
@@ -50,6 +55,7 @@ private
 	def get_commit_link(commit)
 		commit.gsub(/.*,\s*\[(.*)\s+\w+\]\)/, '\1')
 	end
+
 end
 
 branch1 = ARGV[0]
@@ -78,7 +84,12 @@ end
 commits.sort!{ |a,b| a.commit_message <=> b.commit_message }
 
 File.open("#{branch1}.html", 'w') do |f|
+	topic = ""
 	commits.each do |commit|
+		if topic != commit.associated_with
+			topic = commit.associated_with
+			f.write("<h3 class=\"widget-header\">#{topic}</h3>\n")
+		end
 		f.write(commit)
 	end
 end

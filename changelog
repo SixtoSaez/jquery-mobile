@@ -62,8 +62,20 @@ end
 branch1 = ARGV[0]
 branch2 = ARGV[1]
 
+def avail_branches
+	`git branch -a`
+end
 if !branch1
-	puts "To use, give up to 2 arguments, these being the branches that you would like to compare"
+	man = ""
+	man << "To use, give up to 2 arguments, these being the branches that you would like to compare\n"
+	man << "Example:\n"
+	man << "./changelog 1.2-stable\n"
+	man << "or\n"
+	man << "./changelog 1.1-stable 1.2-stable\n"
+	man << "Here is the list of available branches (make sure to leave off the
+	remotes/origin when making arguments):\n"
+	man << "#{avail_branches}"
+	puts man
 	exit
 end
 

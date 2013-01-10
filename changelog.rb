@@ -60,14 +60,15 @@ if !branch1
 	exit
 end
 
-lookup = branch1 + "..."
+branch1 = "remotes/origin/#{branch1}"
+branches = "#{branch1}..."
 if branch2
-	lookup << branch2
+	branches << branch2
 end
 
 format_ticket='[https://github.com/jquery/jquery-mobile/issues/XXXX #XXXX]'
 format_commit='[http://github.com/jquery/jquery-mobile/commit/%H %h]'
-formatted_commits = `git whatchanged #{lookup} --pretty=format:"* %s (#{format_ticket}, #{format_commit})"`
+formatted_commits = `git whatchanged #{branches} --pretty=format:"* %s (#{format_ticket}, #{format_commit})"`
 formatted_commits = formatted_commits.gsub(/^:.*$/, '').gsub(/^\s+$/,'').split(/(\n|\r)/).reject { |x| x =~ /\A\s*\z/ }
 
 #<p><a href="COMMIT_LINK">ISSUE_TITLE</a> (<a href="https://github.com/jquery/jquery-mobile/issues/ISSUE_NUMBER">Issue #ISSUE_NUMBER</a>) - COMMIT_COMMENT

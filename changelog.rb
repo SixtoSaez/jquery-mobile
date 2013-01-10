@@ -62,7 +62,7 @@ branch1 = ARGV[0]
 branch2 = ARGV[1]
 
 if !branch1
-	puts "To use, give up to 2 arguments, these being the branches that you would like to compare, make sure to output to an html file by typing > <filename>.html"
+	puts "To use, give up to 2 arguments, these being the branches that you would like to compare"
 	exit
 end
 
